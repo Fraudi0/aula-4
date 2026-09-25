@@ -1,0 +1,283 @@
+{
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "productId",
+      "value": "preencha-com-o-id-do-produto-criado"
+    }
+  ],
+  "info": {
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name": "Produtos e ViaCEP"
+  },
+  "item": [
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/p1?cep=08773380",
+        "method": "GET"
+      },
+      "name": "Disponível em Mogi das Cruzes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Disponibilidade\", function () { pm.expect(pm.response.json()).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/p11?cep=08773380",
+        "method": "GET"
+      },
+      "name": "Cidade diferente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Disponibilidade\", function () { pm.expect(pm.response.json()).to.eql(false); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/p1?cep=08773-380",
+        "method": "GET"
+      },
+      "name": "CEP com hífen - inválido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CEP com hífen retorna 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/p1?cep=123",
+        "method": "GET"
+      },
+      "name": "CEP inválido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/p1?cep=00000000",
+        "method": "GET"
+      },
+      "name": "CEP inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/availability/inexistente?cep=08773380",
+        "method": "GET"
+      },
+      "name": "Produto inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product",
+        "method": "GET"
+      },
+      "name": "Listar produtos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/endpoint2/p1",
+        "method": "GET"
+      },
+      "name": "Buscar produto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/endpoint3/top5byprice",
+        "method": "GET"
+      },
+      "name": "Top 5 por preço",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/endpoint1?categoryAsParam=Eletrônicos",
+        "method": "GET"
+      },
+      "name": "Filtrar categoria",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status esperado\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\r\n  \"price\": 2500,\r\n  \"distributionCenter\": \"Recife\",\r\n  \"name\": \"Caderno\",\r\n  \"category\": \"Papelaria\"\r\n}",
+          "mode": "raw"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/product",
+        "method": "POST"
+      },
+      "name": "Cadastrar produto"
+    },
+    {
+      "request": {
+        "body": {
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\r\n  \"id\": \"{{productId}}\",\r\n  \"price\": 2500,\r\n  \"distributionCenter\": \"Recife\",\r\n  \"name\": \"Caderno\",\r\n  \"category\": \"Papelaria\"\r\n}",
+          "mode": "raw"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/product",
+        "method": "PUT"
+      },
+      "name": "Atualizar produto"
+    },
+    {
+      "request": {
+        "header": [],
+        "url": "{{baseUrl}}/product/{{productId}}",
+        "method": "DELETE"
+      },
+      "name": "Inativar produto"
+    },
+    {
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\"category\":\"Papelaria\"}"
+        },
+        "header": [
+          {
+            "key": "categoryAsHeader",
+            "value": "Papelaria"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/product/category/Papelaria?categoryAsParam=Papelaria",
+        "method": "GET"
+      },
+      "name": "Categoria com path, header, body e param"
+    }
+  ]
+}

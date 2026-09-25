@@ -31,6 +31,11 @@ public class ProductController {
         this.addressSearch = addressSearch;
     }
 
+    @GetMapping("/availability/{id}")
+    public ResponseEntity<Boolean> checkAvailability(@PathVariable String id, @RequestParam String cep) {
+        return ResponseEntity.ok(addressSearch.checkAvailability(id, cep));
+    }
+
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
@@ -43,19 +48,19 @@ public class ProductController {
         return ResponseEntity.ok(cep);
     }
 
-    @GetMapping("/endpoint1") //products from only one category
+    @GetMapping("/endpoint1")
     public ResponseEntity<List<Product>> getAllProducts1(@RequestParam String categoryAsParam){
         var allProducts = repository.findAllByCategory(categoryAsParam);
         return ResponseEntity.ok(allProducts);
     }
 
-    @GetMapping("/endpoint2/{id}") //only one product
-    public ResponseEntity<Optional<Product>> getProduct(@PathVariable String id){
-        Optional<Product> optionalProduct = repository.findById(id);
-        return ResponseEntity.ok(optionalProduct);
+    @GetMapping("/endpoint2/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable String id){
+        Product product = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/endpoint3/top5byprice") // top 5 product by price
+    @GetMapping("/endpoint3/top5byprice")
     public ResponseEntity<List<Product>> getAllProducts3(){
         var allProducts = repository.findAllByActiveTrue();
 
@@ -68,7 +73,7 @@ public class ProductController {
         return ResponseEntity.ok(topFive);
     }
 
-    @GetMapping("/category/{categoryAsPath}") //all REST Components
+    @GetMapping("/category/{categoryAsPath}")
     public ResponseEntity<List<Product>> getProductsByCategory(
             @RequestHeader String categoryAsHeader,
             @PathVariable String categoryAsPath,
@@ -97,11 +102,17 @@ public class ProductController {
     @PutMapping
     @Transactional
     public ResponseEntity<Product> updateProduct(@RequestBody @Valid RequestProduct data){
+        if (data.id() == null || data.id().isBlank()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Informe o ID do produto.");
+        }
         Optional<Product> optionalProduct = repository.findById(data.id());
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             product.setName(data.name());
             product.setPrice(data.price());
+            product.setCategory(data.category());
+            product.setDistribution_center(data.distributionCenter());
             return ResponseEntity.ok(product);
         } else {
             throw new EntityNotFoundException();

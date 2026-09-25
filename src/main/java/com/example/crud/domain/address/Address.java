@@ -3,11 +3,16 @@ package com.example.crud.domain.address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
+    private Boolean erro;
     private String cep;
     private String logradouro;
     private String complemento;
